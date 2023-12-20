@@ -66,8 +66,8 @@ export type GetUserType = Pick<
 >
 
 export const loginUserFormSchema = z.object({
-  username: z.string().min(1, 'O usuário deve conter ao menos 1 caracter'),
-  password: z.string().min(1, 'A senha deve conter ao menos 1 caracter'),
+  username: z.string().min(1, 'Mínimo de 1 caracter'),
+  password: z.string().min(1, 'Mínimo de 1 caracter'),
 })
 export type LoginUserFormSchemaType = z.infer<typeof loginUserFormSchema>
 

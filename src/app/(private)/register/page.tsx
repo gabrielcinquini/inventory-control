@@ -25,6 +25,7 @@ import {
 import { formatCPF, formatName } from '@/utils/utils'
 import Link from 'next/link'
 import Loader from '@/components/Loader'
+import { setCookie } from 'cookies-next'
 
 export default function Home() {
   const form = useForm<RegisterUserFormSchemaType>({
@@ -41,7 +42,7 @@ export default function Home() {
       const res = await axios.post('/api/register', user)
 
       const token = res.data.accessToken
-      localStorage.setItem('token', token)
+      setCookie('jwt', token)
       router.push('/home')
     } catch (err) {
       if (err instanceof AxiosError) {

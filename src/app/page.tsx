@@ -28,6 +28,8 @@ import {
 } from '@/components/ui/form'
 import { ModeToggleTheme } from '@/components/ModeToggleTheme'
 
+import { setCookie } from 'cookies-next'
+
 export default function LoginPage() {
   const form = useForm<LoginUserFormSchemaType>({
     mode: 'onChange',
@@ -47,7 +49,7 @@ export default function LoginPage() {
         router.push('/home')
         const token = response.data.accessToken
 
-        localStorage.setItem('token', token)
+        setCookie('jwt', token)
       }
     } catch (err) {
       if (err instanceof AxiosError) {

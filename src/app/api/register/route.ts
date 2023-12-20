@@ -45,7 +45,7 @@ export async function POST(req: NextRequest) {
 
   const user = await prismaClient.user.create({
     data: {
-      username,
+      username: cryptUsername,
       password: hashSync(password, 10),
       name,
       lastName,

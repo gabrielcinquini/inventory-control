@@ -1,11 +1,11 @@
-import { NextResponse } from "next/server";
+import { NextResponse } from 'next/server'
 
-import { prismaClient } from "@/database/client";
+import { prismaClient } from '@/database/client'
 
 export async function GET() {
   const controls = await prismaClient.control.findMany({
     orderBy: {
-      modifiedAt: "desc",
+      modifiedAt: 'desc',
     },
     select: {
       id: true,
@@ -26,7 +26,7 @@ export async function GET() {
         },
       },
     },
-  });
+  })
 
-  return NextResponse.json(controls);
+  return NextResponse.json(controls)
 }
