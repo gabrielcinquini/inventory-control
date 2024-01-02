@@ -166,3 +166,10 @@ export const controlSchema = z.object({
   }),
 })
 export type ControlSchemaType = z.infer<typeof controlSchema>
+
+export const editUserPermissionSchema = z.object({
+  userIdToUpdate: z.string().uuid(),
+})
+export type EditUserPermissionSchemaType = z.infer<
+  typeof editUserPermissionSchema
+>

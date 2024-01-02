@@ -1,14 +1,11 @@
+import './globals.css'
+
 import type { Metadata } from 'next'
 import { Inter, Roboto } from 'next/font/google'
-import './globals.css'
+
 import { ThemeProvider } from '@/components/ui/theme-provider'
-import { GenericLayout } from '@/layouts/Generic'
 import { ClientProviderLayout } from '@/layouts/ClientProvider'
-import { UseMeType } from '@/validations/validations'
-import axios from 'axios'
-import UserStoreInitializer from '@/store/initializer'
-import { deleteCookie } from 'cookies-next'
-import { redirect } from 'next/navigation'
+import { GenericLayout } from '@/layouts/Generic'
 
 const inter = Inter({
   subsets: ['latin'],

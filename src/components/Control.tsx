@@ -1,34 +1,37 @@
+import { useQuery } from '@tanstack/react-query'
+import axios from 'axios'
 import { format } from 'date-fns'
-import { ArrowRight, ChevronDown, ChevronUp } from 'lucide-react'
+import { ArrowRight, ChevronDown, ChevronUp, Trash2 } from 'lucide-react'
 import React, { useState } from 'react'
 import { toast } from 'sonner'
+
+import { useDeleteControl } from '@/hooks/Controls/Mutations/useDeleteControl'
+import { useStore } from '@/store'
+import { ControlSchemaType } from '@/validations/validations'
+
+import DeleteAlert from './DeleteAlert'
+import { Pagination } from './Pagination'
 import {
   Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
   CardHeader,
   CardTitle,
-  CardDescription,
-  CardContent,
-  CardFooter,
 } from './ui/card'
+import { Skeleton } from './ui/skeleton'
 import {
   Table,
-  TableHeader,
-  TableRow,
-  TableHead,
   TableBody,
   TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
 } from './ui/table'
-import { Pagination } from './Pagination'
-import { ControlSchemaType } from '@/validations/validations'
-import axios from 'axios'
-import { useQuery } from '@tanstack/react-query'
-import { useStore } from '@/store'
-import { useDeleteControl } from '@/hooks/Controls/Mutations/useDeleteControl'
-import DeleteAlert from './DeleteAlert'
 
 export default function Control({ itemsPerPage }: { itemsPerPage: number }) {
   const [currentPage, setCurrentPage] = useState(1)
-  const { setPending } = useStore()
+  const { pending, setPending } = useStore()
 
   const { onDeleteControl } = useDeleteControl()
 
@@ -81,6 +84,14 @@ export default function Control({ itemsPerPage }: { itemsPerPage: number }) {
             </TableRow>
           </TableHeader>
           <TableBody>
+            {isLoading &&
+              Array.from({ length: 4 }).map((_, index) => (
+                <TableRow key={index}>
+                  <TableCell colSpan={6}>
+                    <Skeleton className="h-10" />
+                  </TableCell>
+                </TableRow>
+              ))}
             {controls?.slice(startIndex, endIndex).map((control, index) => (
               <TableRow key={control.id}>
                 <TableCell>
@@ -125,7 +136,14 @@ export default function Control({ itemsPerPage }: { itemsPerPage: number }) {
                         loading: `Deletando o registro de controle de ${control.User.name} ${control.User.lastName}...`,
                       })
                     }}
-                  />
+                  >
+                    <button
+                      className="rounded-full bg-red-600 p-2 text-black transition-all duration-200 hover:bg-red-950 disabled:opacity-80"
+                      disabled={pending}
+                    >
+                      <Trash2 />
+                    </button>
+                  </DeleteAlert>
                 </TableCell>
               </TableRow>
             ))}

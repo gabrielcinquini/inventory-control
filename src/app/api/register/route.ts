@@ -1,8 +1,7 @@
-import { NextRequest, NextResponse } from 'next/server'
-
 import { hashSync } from 'bcryptjs'
-import { sign } from 'jsonwebtoken'
 import CryptoJS from 'crypto-js'
+import { sign, verify } from 'jsonwebtoken'
+import { NextRequest, NextResponse } from 'next/server'
 
 import { prismaClient } from '@/database/client'
 import {
@@ -11,6 +10,31 @@ import {
 } from '@/validations/validations'
 
 export async function POST(req: NextRequest) {
+  const authToken = req.headers.get('Authorization')
+  if (!authToken)
+    return NextResponse.json(
+      { message: 'O token deve ser passado' },
+      { status: 404 },
+    )
+  const { sub: userId } = verify(authToken, 'SUPER_SECRET')
+  const userFound = await prismaClient.user.findFirst({
+    where: { id: userId as string },
+    select: {
+      admin: true,
+    },
+  })
+  if (!userFound)
+    return NextResponse.json(
+      { message: 'Usuário não encontrado' },
+      { status: 404 },
+    )
+
+  if (!userFound.admin)
+    return NextResponse.json(
+      { message: 'Você não tem permissão para isso!' },
+      { status: 404 },
+    )
+
   const body = await req.json()
 
   const parsedBody = registerUserFormSchema.safeParse(body)
@@ -50,11 +74,13 @@ export async function POST(req: NextRequest) {
       name,
       lastName,
     },
+    select: {
+      name: true,
+      lastName: true,
+    },
   })
 
-  const accessToken = sign({ sub: user.id }, 'SUPER_SECRET', {
-    expiresIn: '1d',
+  return NextResponse.json({
+    message: `Usuário ${user.name} ${user.lastName} cadastrado com sucesso!`,
   })
-
-  return NextResponse.json({ accessToken })
 }

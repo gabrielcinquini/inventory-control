@@ -1,9 +1,10 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import axios, { AxiosError } from 'axios'
-import { revalidatePath } from '@/utils/utils'
-import { toast } from 'sonner'
-import { useStore } from '@/store'
 import { getCookie } from 'cookies-next'
+import { toast } from 'sonner'
+
+import { useStore } from '@/store'
+import { revalidatePath } from '@/utils/utils'
 
 export const useDeleteControl = () => {
   const { setPending } = useStore()

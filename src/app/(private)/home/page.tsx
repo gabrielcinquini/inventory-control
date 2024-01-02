@@ -2,10 +2,10 @@
 
 import React from 'react'
 
+import Control from '@/components/Control'
+import Product from '@/components/Product'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { useStore } from '@/store'
-import Product from '@/components/Product'
-import Control from '@/components/Control'
 
 export default function HomePage() {
   const { user } = useStore()
@@ -13,7 +13,7 @@ export default function HomePage() {
   const itemsPerPage = 8
 
   return (
-    <Tabs defaultValue="products" className="mx-10 max-sm:mx-2 mt-2">
+    <Tabs defaultValue="products" className="mx-10 mt-2 max-sm:mx-2">
       <TabsList
         className={`grid w-full ${user?.admin ? 'grid-cols-2' : 'grid-cols-1'}`}
       >

@@ -1,6 +1,7 @@
-import { prismaClient } from '@/database/client'
 import { verify } from 'jsonwebtoken'
 import { NextRequest, NextResponse } from 'next/server'
+
+import { prismaClient } from '@/database/client'
 
 export async function DELETE(req: NextRequest, { params }: any) {
   const { id } = params

@@ -1,8 +1,9 @@
-import { ItemSchemaFormType } from '@/validations/validations'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
-import axios, { AxiosResponse, AxiosError } from 'axios'
-import { revalidatePath } from '@/utils/utils'
+import axios, { AxiosError, AxiosResponse } from 'axios'
 import { toast } from 'sonner'
+
+import { revalidatePath } from '@/utils/utils'
+import { ItemSchemaFormType } from '@/validations/validations'
 
 export const useCreateProduct = () => {
   const queryClient = useQueryClient()

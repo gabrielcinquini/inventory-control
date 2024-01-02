@@ -1,6 +1,7 @@
-import { NextRequest, NextResponse } from 'next/server'
-import { prismaClient } from '@/database/client'
 import { verify } from 'jsonwebtoken'
+import { NextRequest, NextResponse } from 'next/server'
+
+import { prismaClient } from '@/database/client'
 import { editItemSchemaForm } from '@/validations/validations'
 
 export async function POST(req: NextRequest) {

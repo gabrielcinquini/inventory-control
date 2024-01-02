@@ -1,1 +1,1 @@
-export { useDeleteProduct } from './useDeleteControl'
+export * from './useDeleteControl'

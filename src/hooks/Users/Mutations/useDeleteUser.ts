@@ -3,37 +3,33 @@ import axios, { AxiosError, AxiosResponse } from 'axios'
 import { getCookie } from 'cookies-next'
 import { toast } from 'sonner'
 
-import { useStore } from '@/store'
 import { revalidatePath } from '@/utils/utils'
+import { DeleteUserSchemaType } from '@/validations/validations'
 
-export const useDeleteProduct = () => {
-  const { setPending } = useStore()
+export const useDeleteUser = () => {
   const queryClient = useQueryClient()
 
-  const { mutateAsync: onDeleteProduct, ...mutation } = useMutation({
-    mutationFn: async (id: string) => {
-      setPending(true)
-      const authToken = getCookie('jwt')
-      const response = await axios.delete(`/api/item/${id}`, {
-        headers: { Authorization: authToken },
-      })
+  const { mutateAsync: onDeleteUser, ...mutation } = useMutation({
+    mutationFn: async (data: DeleteUserSchemaType) => {
+      const jwt = getCookie('jwt')
 
+      const response = await axios.delete(`/api/users/${data.id}`, {
+        headers: { Authorization: jwt },
+      })
       return response
     },
     onSuccess: (response: AxiosResponse) => {
-      setPending(false)
       toast.success(response.data.message)
-      revalidatePath(['products', 'controls'], queryClient)
+      revalidatePath(['users'], queryClient)
     },
     onError: (err) => {
-      setPending(false)
       if (err instanceof AxiosError) {
         toast.error(err.response?.data.message)
+        console.error(err)
       } else {
         toast.error('Ocorreu um erro inesperado')
       }
     },
   })
-
-  return { onDeleteProduct, ...mutation }
+  return { onDeleteUser, ...mutation }
 }

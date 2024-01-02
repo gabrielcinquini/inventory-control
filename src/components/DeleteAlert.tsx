@@ -1,36 +1,30 @@
 import { Trash2 } from 'lucide-react'
-import React from 'react'
-import {
-  AlertDialogHeader,
-  AlertDialogFooter,
-  AlertDialog,
-  AlertDialogTrigger,
-  AlertDialogContent,
-  AlertDialogTitle,
-  AlertDialogDescription,
-  AlertDialogCancel,
-  AlertDialogAction,
-} from './ui/alert-dialog'
+import React, { ReactNode } from 'react'
+
 import { useStore } from '@/store'
+
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from './ui/alert-dialog'
 
 type DeleteAlertType = {
   title: string
   fn: () => void
+  children: ReactNode
 }
 
-export default function DeleteAlert({ title, fn }: DeleteAlertType) {
-  const { pending } = useStore()
-
+export default function DeleteAlert({ title, fn, children }: DeleteAlertType) {
   return (
     <AlertDialog>
-      <AlertDialogTrigger asChild>
-        <button
-          className="bg-red-600 p-2 rounded-full text-black hover:bg-red-950 transition-all duration-200 disabled:opacity-80"
-          disabled={pending}
-        >
-          <Trash2 />
-        </button>
-      </AlertDialogTrigger>
+      <AlertDialogTrigger asChild>{children}</AlertDialogTrigger>
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle>{title}</AlertDialogTitle>

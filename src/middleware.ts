@@ -1,4 +1,4 @@
-import { NextResponse, type NextRequest } from 'next/server'
+import { type NextRequest, NextResponse } from 'next/server'
 
 export default async function ensureAuthMiddleware(request: NextRequest) {
   const isLoggedUser = Boolean(request.cookies.get('jwt')?.value)

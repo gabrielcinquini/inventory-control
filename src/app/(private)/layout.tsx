@@ -1,9 +1,10 @@
-import UserStoreInitializer from '@/store/initializer'
-import { UseMeType } from '@/validations/validations'
 import axios from 'axios'
+import { cookies, headers } from 'next/headers'
 import { redirect } from 'next/navigation'
 import React, { PropsWithChildren } from 'react'
-import { cookies, headers } from 'next/headers'
+
+import UserStoreInitializer from '@/store/initializer'
+import { UseMeType } from '@/validations/validations'
 
 async function getUser() {
   try {

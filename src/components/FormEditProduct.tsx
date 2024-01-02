@@ -1,33 +1,35 @@
+import { zodResolver } from '@hookform/resolvers/zod'
 import { Pencil } from 'lucide-react'
 import React, { useState } from 'react'
 import { useForm } from 'react-hook-form'
+
+import { useEditProduct } from '@/hooks'
+import { useStore } from '@/store'
+import {
+  editItemSchemaForm,
+  EditItemSchemaFormType,
+  ItemSchemaType,
+} from '@/validations/validations'
+
 import { Button } from './ui/button'
 import {
-  DialogHeader,
-  DialogFooter,
   Dialog,
-  DialogTrigger,
   DialogContent,
-  DialogTitle,
   DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
 } from './ui/dialog'
 import {
   Form,
+  FormControl,
   FormField,
   FormItem,
-  FormControl,
-  FormMessage,
   FormLabel,
+  FormMessage,
 } from './ui/form'
 import { Input } from './ui/input'
-import { useStore } from '@/store'
-import {
-  EditItemSchemaFormType,
-  ItemSchemaType,
-  editItemSchemaForm,
-} from '@/validations/validations'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { useEditProduct } from '@/hooks'
 
 type FormEditProductType = {
   item: ItemSchemaType
@@ -60,7 +62,7 @@ export function FormEditProduct({ item }: FormEditProductType) {
     <Dialog>
       <DialogTrigger asChild>
         <button
-          className="bg-orange-400 p-2 rounded-full text-black hover:bg-orange-200 transition-all duration-200 disabled:opacity-80"
+          className="rounded-full bg-orange-400 p-2 text-black transition-all duration-200 hover:bg-orange-200 disabled:opacity-80"
           disabled={pending}
           onClick={() => setProduct(item)}
         >

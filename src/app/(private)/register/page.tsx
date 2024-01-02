@@ -1,20 +1,17 @@
 'use client'
 
-import { toast } from 'sonner'
-import axios, { AxiosError } from 'axios'
-import { useRouter } from 'next/navigation'
-import {
-  RegisterUserFormSchemaType,
-  registerUserFormSchema,
-} from '@/validations/validations'
-
-import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { ArrowLeftIcon } from '@radix-ui/react-icons'
+import axios, { AxiosError } from 'axios'
+import { getCookie } from 'cookies-next'
+import Link from 'next/link'
+import { useRouter } from 'next/navigation'
+import { useForm } from 'react-hook-form'
+import { toast } from 'sonner'
+
+import Loader from '@/components/Loader'
 import { ModeToggleTheme } from '@/components/ModeToggleTheme'
 import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { ArrowLeftIcon } from '@radix-ui/react-icons'
-
 import {
   Form,
   FormControl,
@@ -22,12 +19,17 @@ import {
   FormItem,
   FormMessage,
 } from '@/components/ui/form'
+import { Input } from '@/components/ui/input'
+import { useStore } from '@/store'
 import { formatCPF, formatName } from '@/utils/utils'
-import Link from 'next/link'
-import Loader from '@/components/Loader'
-import { setCookie } from 'cookies-next'
+import {
+  registerUserFormSchema,
+  RegisterUserFormSchemaType,
+} from '@/validations/validations'
 
 export default function Home() {
+  const { user } = useStore()
+
   const form = useForm<RegisterUserFormSchemaType>({
     mode: 'all',
     resolver: zodResolver(registerUserFormSchema),
@@ -39,11 +41,12 @@ export default function Home() {
     user: Omit<RegisterUserFormSchemaType, 'confirmPassword'>,
   ) => {
     try {
-      const res = await axios.post('/api/register', user)
+      const jwt = getCookie('jwt')
+      const response = await axios.post('/api/register', user, {
+        headers: { Authorization: jwt },
+      })
 
-      const token = res.data.accessToken
-      setCookie('jwt', token)
-      router.push('/home')
+      toast.success(response.data.message)
     } catch (err) {
       if (err instanceof AxiosError) {
         toast.error(err.response?.data.message)
@@ -53,14 +56,16 @@ export default function Home() {
     }
   }
 
+  if (!user?.admin) router.push('/')
+
   return (
-    <div className="flex h-screen justify-center items-center">
+    <div className="flex h-screen items-center justify-center">
       <div className="absolute top-12">
         <ModeToggleTheme />
       </div>
       <Form {...form}>
         <form
-          className="flex flex-col gap-2 items-center"
+          className="flex flex-col items-center gap-2"
           onSubmit={form.handleSubmit(handleRegister)}
         >
           <FormField
@@ -157,7 +162,7 @@ export default function Home() {
               </FormItem>
             )}
           />
-          <div className="flex flex-col gap-8 justify-evenly w-full">
+          <div className="flex w-full flex-col justify-evenly gap-8">
             <Button
               className="disabled:cursor-not-allowed disabled:opacity-50"
               type="submit"
@@ -167,7 +172,7 @@ export default function Home() {
               Cadastrar
             </Button>
             <Button asChild variant={'secondary'}>
-              <Link href="/" className="flex gap-2 w-full">
+              <Link href="/" className="flex w-full gap-2">
                 <ArrowLeftIcon />
                 Voltar
               </Link>

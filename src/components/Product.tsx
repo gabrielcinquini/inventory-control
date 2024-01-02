@@ -1,41 +1,47 @@
 'use client'
 
-import React, { useState } from 'react'
-import { toast } from 'sonner'
-import {
-  Card,
-  CardHeader,
-  CardTitle,
-  CardDescription,
-  CardContent,
-  CardFooter,
-} from './ui/card'
-import {
-  Table,
-  TableHeader,
-  TableRow,
-  TableHead,
-  TableBody,
-  TableCell,
-} from './ui/table'
-import { ItemSchemaType } from '@/validations/validations'
 import { useQuery } from '@tanstack/react-query'
 import axios from 'axios'
+import { Trash2 } from 'lucide-react'
+import React, { useState } from 'react'
+import { toast } from 'sonner'
+
 import { useDeleteProduct } from '@/hooks'
+import { useStore } from '@/store'
+import { ItemSchemaType } from '@/validations/validations'
+
+import DeleteAlert from './DeleteAlert'
 import { FormCreateProduct } from './FormCreateProduct'
 import { FormEditProduct } from './FormEditProduct'
 import { Pagination } from './Pagination'
-import DeleteAlert from './DeleteAlert'
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from './ui/card'
+import { Skeleton } from './ui/skeleton'
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from './ui/table'
 
 export default function Product({ itemsPerPage }: { itemsPerPage: number }) {
   const [currentPage, setCurrentPage] = useState(1)
+  const { pending } = useStore()
 
   const startIndex = (currentPage - 1) * itemsPerPage
   const endIndex = startIndex + itemsPerPage
 
   const { onDeleteProduct } = useDeleteProduct()
 
-  const { data: products } = useQuery({
+  const { data: products, isLoading } = useQuery({
     queryFn: () => getProducts(),
     queryKey: ['products'],
   })
@@ -78,6 +84,14 @@ export default function Product({ itemsPerPage }: { itemsPerPage: number }) {
             </TableRow>
           </TableHeader>
           <TableBody>
+            {isLoading &&
+              Array.from({ length: 4 }).map((_, index) => (
+                <TableRow key={index}>
+                  <TableCell colSpan={3}>
+                    <Skeleton className="h-10" />
+                  </TableCell>
+                </TableRow>
+              ))}
             {products?.slice(startIndex, endIndex).map((item, index) => (
               <>
                 <TableRow key={item.id}>
@@ -86,7 +100,7 @@ export default function Product({ itemsPerPage }: { itemsPerPage: number }) {
                     {item.amount}/{item.totalAmount}
                   </TableCell>
                   <TableCell>
-                    <div className="flex gap-2 items-center">
+                    <div className="flex items-center gap-2">
                       <FormEditProduct item={item} />
 
                       <DeleteAlert
@@ -97,7 +111,14 @@ export default function Product({ itemsPerPage }: { itemsPerPage: number }) {
                             loading: `Deletando o produto ${item.name}...`,
                           })
                         }}
-                      />
+                      >
+                        <button
+                          className="rounded-full bg-red-600 p-2 text-black transition-all duration-200 hover:bg-red-950 disabled:opacity-80"
+                          disabled={pending}
+                        >
+                          <Trash2 />
+                        </button>
+                      </DeleteAlert>
                     </div>
                   </TableCell>
                 </TableRow>
