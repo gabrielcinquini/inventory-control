@@ -44,7 +44,7 @@ export const userSchema = z.object({
   username: z
     .string()
     .regex(/^[0-9]+$/, 'Deve conter apenas números')
-    .min(5, 'Mínimo de 5 caracteres')
+    .min(4, 'Mínimo de 4 caracteres')
     .max(10, 'Máximo de 10 caracteres'),
   password: z.string().min(1, 'Mínimo de 1 caracter'),
   name: z
