@@ -4,10 +4,11 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "prisma generate",
     "start": "next start",
     "lint": "next lint",
-    "lint:fix": "eslint ./src --ext .ts,.tsx --max-warnings=0 --fix"
+    "lint:fix": "eslint ./src --ext .ts,.tsx --max-warnings=0 --fix",
+    "postinstall": "prisma generate"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.3.2",
