@@ -78,6 +78,7 @@ export default function Control({ itemsPerPage }: { itemsPerPage: number }) {
       locale: ptBR,
     })
     const productName = control.Item.name.toLowerCase()
+
     return (
       userFullName.includes(filter.toLowerCase()) ||
       productName.includes(filter.toLocaleLowerCase()) ||

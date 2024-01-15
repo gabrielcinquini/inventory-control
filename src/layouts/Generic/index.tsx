@@ -4,6 +4,8 @@ import { useTheme } from 'next-themes'
 import React, { PropsWithChildren } from 'react'
 import { Toaster } from 'sonner'
 
+type ThemeOptions = 'dark' | 'light' | 'system'
+
 export function GenericLayout({ children }: PropsWithChildren) {
   const { theme } = useTheme()
 
@@ -11,7 +13,7 @@ export function GenericLayout({ children }: PropsWithChildren) {
     <>
       <Toaster
         richColors
-        theme={theme}
+        theme={theme as ThemeOptions}
         closeButton
         duration={3000}
         position="top-right"
