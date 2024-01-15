@@ -79,7 +79,7 @@ export default function Home() {
                     }}
                     autoComplete="off"
                     className="appearance-none"
-                    min={7}
+                    min={5}
                     max={10}
                   />
                 </FormControl>
