@@ -1,9 +1,9 @@
 import { NextResponse } from 'next/server'
 
-import { prismaClient } from '@/database/client'
+import { prisma } from '@/database/client'
 
 export async function GET() {
-  const controls = await prismaClient.control.findMany({
+  const controls = await prisma.control.findMany({
     orderBy: {
       modifiedAt: 'desc',
     },
@@ -36,7 +36,7 @@ export async function DELETE() {
   const trintaDiasAtras = new Date()
   trintaDiasAtras.setDate(trintaDiasAtras.getDate() - 30)
 
-  const registrosParaExcluir = await prismaClient.control.findMany({
+  const registrosParaExcluir = await prisma.control.findMany({
     where: {
       modifiedAt: {
         lt: trintaDiasAtras,
@@ -45,7 +45,7 @@ export async function DELETE() {
   })
 
   for (const registro of registrosParaExcluir) {
-    await prismaClient.control.delete({
+    await prisma.control.delete({
       where: {
         id: registro.id,
       },

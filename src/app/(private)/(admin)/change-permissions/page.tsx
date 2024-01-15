@@ -43,14 +43,15 @@ export default function ChangePermissionsPage() {
     resolver: zodResolver(editUserPermissionSchema),
   })
 
-  const { data: users, isLoading } = useQuery({
-    queryFn: () => getUsers(),
-    queryKey: ['users'],
-  })
   const getUsers = async () => {
     const response = await axios.get<UserType[]>('/api/users')
     return response.data
   }
+
+  const { data: users, isLoading } = useQuery({
+    queryFn: () => getUsers(),
+    queryKey: ['users'],
+  })
 
   const { onGiveUserPermissions } = useGiveUserPermissions()
   const handleChangeUserPermissions = async (

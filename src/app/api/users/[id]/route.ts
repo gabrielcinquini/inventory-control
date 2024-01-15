@@ -1,7 +1,7 @@
 import { verify } from 'jsonwebtoken'
 import { NextRequest, NextResponse } from 'next/server'
 
-import { prismaClient } from '@/database/client'
+import { prisma } from '@/database/client'
 import { editUserPermissionSchema } from '@/validations/validations'
 import { ParamsProps } from '../../control/[id]/route'
 
@@ -13,7 +13,7 @@ export async function POST(req: NextRequest) {
       { status: 404 },
     )
   const { sub: userId } = verify(authToken, 'SUPER_SECRET')
-  const userFound = await prismaClient.user.findFirst({
+  const userFound = await prisma.user.findFirst({
     where: { id: userId as string },
     select: {
       admin: true,
@@ -39,7 +39,7 @@ export async function POST(req: NextRequest) {
 
   const { userIdToUpdate } = parsedBody.data
 
-  const userToUpdate = await prismaClient.user.findFirst({
+  const userToUpdate = await prisma.user.findFirst({
     where: { id: userIdToUpdate },
     select: { id: true, name: true, lastName: true, admin: true },
   })
@@ -61,7 +61,7 @@ export async function POST(req: NextRequest) {
       { status: 404 },
     )
 
-  const updatedUser = await prismaClient.user.update({
+  const updatedUser = await prisma.user.update({
     where: { id: userToUpdate.id },
     data: {
       admin: true,
@@ -95,7 +95,7 @@ export async function DELETE(req: NextRequest, { params }: ParamsProps) {
       { status: 404 },
     )
   const { sub: userId } = verify(authToken, 'SUPER_SECRET')
-  const userFound = await prismaClient.user.findFirst({
+  const userFound = await prisma.user.findFirst({
     where: { id: userId as string },
     select: {
       admin: true,
@@ -113,7 +113,7 @@ export async function DELETE(req: NextRequest, { params }: ParamsProps) {
       { status: 404 },
     )
 
-  const userToDelete = await prismaClient.user.findFirst({
+  const userToDelete = await prisma.user.findFirst({
     where: { id },
     select: { id: true, name: true, lastName: true },
   })
@@ -124,7 +124,7 @@ export async function DELETE(req: NextRequest, { params }: ParamsProps) {
       { status: 404 },
     )
 
-  const userDeleted = await prismaClient.user.delete({
+  const userDeleted = await prisma.user.delete({
     where: { id: userToDelete.id },
     select: {
       name: true,

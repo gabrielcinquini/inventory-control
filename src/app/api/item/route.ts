@@ -1,9 +1,9 @@
-import { prismaClient } from '@/database/client'
+import { prisma } from '@/database/client'
 import { itemSchemaForm } from '@/validations/validations'
 import { NextRequest, NextResponse } from 'next/server'
 
 export async function GET() {
-  const items = await prismaClient.item.findMany({
+  const items = await prisma.item.findMany({
     orderBy: {
       name: 'asc',
     },
@@ -26,7 +26,7 @@ export async function POST(req: NextRequest) {
 
   const { name, amount, totalAmount } = parsedBody.data
 
-  const itemAlreadyRegistered = await prismaClient.item.findFirst({
+  const itemAlreadyRegistered = await prisma.item.findFirst({
     where: {
       name,
     },
@@ -40,7 +40,7 @@ export async function POST(req: NextRequest) {
       { status: 404 },
     )
 
-  const itemCreated = await prismaClient.item.create({
+  const itemCreated = await prisma.item.create({
     data: {
       name,
       amount,

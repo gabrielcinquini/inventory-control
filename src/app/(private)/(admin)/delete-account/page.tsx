@@ -43,15 +43,15 @@ export default function DeleteAccountPage() {
     mode: 'onChange',
     resolver: zodResolver(deleteUserSchema),
   })
+  const getUsers = async () => {
+    const response = await axios.get<UserType[]>('/api/users')
+    return response.data
+  }
 
   const { data: users, isLoading } = useQuery({
     queryFn: () => getUsers(),
     queryKey: ['users'],
   })
-  const getUsers = async () => {
-    const response = await axios.get<UserType[]>('/api/users')
-    return response.data
-  }
 
   const { onDeleteUser } = useDeleteUser()
   const handleDeleteUser = async (value: DeleteUserSchemaType) => {

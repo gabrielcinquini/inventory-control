@@ -1,7 +1,7 @@
 import { JsonWebTokenError, verify } from 'jsonwebtoken'
 import { NextRequest, NextResponse } from 'next/server'
 
-import { prismaClient } from '@/database/client'
+import { prisma } from '@/database/client'
 
 export async function GET(req: NextRequest) {
   const cookieValue = req.headers.get('Authorization')
@@ -17,7 +17,7 @@ export async function GET(req: NextRequest) {
       return NextResponse.json({ message: 'Invalid User' }, { status: 401 })
     }
 
-    const user = await prismaClient.user.findFirst({
+    const user = await prisma.user.findFirst({
       where: {
         id: userId,
       },

@@ -1,7 +1,7 @@
 import { verify } from 'jsonwebtoken'
 import { NextRequest, NextResponse } from 'next/server'
 
-import { prismaClient } from '@/database/client'
+import { prisma } from '@/database/client'
 import { editItemSchemaForm } from '@/validations/validations'
 import { ParamsProps } from '../../control/[id]/route'
 
@@ -22,7 +22,7 @@ export async function POST(req: NextRequest) {
       { status: 404 },
     )
   const { sub: userId } = verify(authToken, 'SUPER_SECRET')
-  const userFound = await prismaClient.user.findFirst({
+  const userFound = await prisma.user.findFirst({
     where: { id: userId as string },
     select: {
       id: true,
@@ -51,7 +51,7 @@ export async function POST(req: NextRequest) {
       { status: 404 },
     )
 
-  const lastItemFound = await prismaClient.item.findFirst({ where: { id } })
+  const lastItemFound = await prisma.item.findFirst({ where: { id } })
   if (!lastItemFound)
     return NextResponse.json(
       { message: 'Produto com esse id não encontrado' },
@@ -66,7 +66,7 @@ export async function POST(req: NextRequest) {
       { status: 404 },
     )
 
-  await prismaClient.control.create({
+  await prisma.control.create({
     data: {
       newAmount: amount,
       lastAmount: lastItemFound.amount,
@@ -77,7 +77,7 @@ export async function POST(req: NextRequest) {
     },
   })
 
-  await prismaClient.item.update({
+  await prisma.item.update({
     where: {
       id,
     },
@@ -101,7 +101,7 @@ export async function DELETE(req: NextRequest, { params }: ParamsProps) {
       { status: 404 },
     )
   const { sub: userId } = verify(authToken, 'SUPER_SECRET')
-  const userFound = await prismaClient.user.findFirst({
+  const userFound = await prisma.user.findFirst({
     where: { id: userId as string },
     select: {
       admin: true,
@@ -119,7 +119,7 @@ export async function DELETE(req: NextRequest, { params }: ParamsProps) {
       { status: 404 },
     )
 
-  const productDeleted = await prismaClient.item.delete({
+  const productDeleted = await prisma.item.delete({
     where: { id },
   })
 

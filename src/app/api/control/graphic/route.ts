@@ -1,6 +1,8 @@
 import { NextResponse } from 'next/server'
 
-import { prismaClient } from '@/database/client'
+import { prisma } from '@/database/client'
+
+export const dynamic = 'force-dynamic'
 
 interface ItemSummary {
   product: string
@@ -8,7 +10,7 @@ interface ItemSummary {
 }
 
 export async function GET() {
-  const items = await prismaClient.item.findMany({
+  const items = await prisma.item.findMany({
     select: {
       name: true,
       Control: {

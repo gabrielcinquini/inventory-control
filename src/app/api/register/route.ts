@@ -3,7 +3,7 @@ import CryptoJS from 'crypto-js'
 import { verify } from 'jsonwebtoken'
 import { NextRequest, NextResponse } from 'next/server'
 
-import { prismaClient } from '@/database/client'
+import { prisma } from '@/database/client'
 import {
   LoginUserFormSchemaType,
   registerUserFormSchema,
@@ -17,7 +17,7 @@ export async function POST(req: NextRequest) {
       { status: 404 },
     )
   const { sub: userId } = verify(authToken, 'SUPER_SECRET')
-  const userFound = await prismaClient.user.findFirst({
+  const userFound = await prisma.user.findFirst({
     where: { id: userId as string },
     select: {
       admin: true,
@@ -52,7 +52,7 @@ export async function POST(req: NextRequest) {
   const bytes = CryptoJS.AES.decrypt(cryptUsername, process.env.C_KEY)
   const originalUsername = bytes.toString(CryptoJS.enc.Utf8)
 
-  const users = await prismaClient.user.findMany()
+  const users = await prisma.user.findMany()
 
   const userRegistered = users.filter((user: LoginUserFormSchemaType) => {
     const bytes = CryptoJS.AES.decrypt(user.username, process.env.C_KEY)
@@ -67,7 +67,7 @@ export async function POST(req: NextRequest) {
     )
   }
 
-  const user = await prismaClient.user.create({
+  const user = await prisma.user.create({
     data: {
       username: cryptUsername,
       password: hashSync(password, 10),

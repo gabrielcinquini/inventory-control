@@ -4,7 +4,7 @@ import { sign } from 'jsonwebtoken'
 import { compareSync } from 'bcryptjs'
 import CryptoJS from 'crypto-js'
 
-import { prismaClient } from '@/database/client'
+import { prisma } from '@/database/client'
 import {
   LoginUserFormSchemaType,
   loginUserFormSchema,
@@ -35,7 +35,7 @@ export async function POST(req: NextRequest) {
   const bytes = CryptoJS.AES.decrypt(cryptUsername, process.env.C_KEY)
   const originalUsername = bytes.toString(CryptoJS.enc.Utf8)
 
-  const users = await prismaClient.user.findMany({
+  const users = await prisma.user.findMany({
     select: {
       id: true,
       username: true,
@@ -63,7 +63,7 @@ export async function POST(req: NextRequest) {
     expiresIn: '1d',
   })
 
-  await prismaClient.user.update({
+  await prisma.user.update({
     where: { id: user.id },
     data: { lastLogin: new Date() },
   })

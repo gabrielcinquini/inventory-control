@@ -1,9 +1,11 @@
 import { NextResponse } from 'next/server'
 
-import { prismaClient } from '@/database/client'
+import { prisma } from '@/database/client'
+
+export const dynamic = 'force-dynamic'
 
 export async function GET() {
-  const users = await prismaClient.user.findMany({
+  const users = await prisma.user.findMany({
     orderBy: { name: 'asc' },
     where: {
       admin: false,

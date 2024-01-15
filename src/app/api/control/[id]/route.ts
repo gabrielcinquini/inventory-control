@@ -1,7 +1,7 @@
 import { verify } from 'jsonwebtoken'
 import { NextRequest, NextResponse } from 'next/server'
 
-import { prismaClient } from '@/database/client'
+import { prisma } from '@/database/client'
 
 export interface ParamsProps {
   params: {
@@ -18,7 +18,7 @@ export async function DELETE(req: NextRequest, { params }: ParamsProps) {
       { status: 404 },
     )
   const { sub: userId } = verify(authToken, 'SUPER_SECRET')
-  const userFound = await prismaClient.user.findFirst({
+  const userFound = await prisma.user.findFirst({
     where: { id: userId as string },
     select: {
       admin: true,
@@ -36,7 +36,7 @@ export async function DELETE(req: NextRequest, { params }: ParamsProps) {
       { status: 404 },
     )
 
-  const controlDeleted = await prismaClient.control.delete({
+  const controlDeleted = await prisma.control.delete({
     where: { id },
   })
 
