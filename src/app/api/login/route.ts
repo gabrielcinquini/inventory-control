@@ -26,6 +26,7 @@ export async function POST(req: NextRequest) {
       { status: 404 },
     )
   }
+
   const cryptUsername = CryptoJS.AES.encrypt(
     username,
     process.env.C_KEY,
