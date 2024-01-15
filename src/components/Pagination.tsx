@@ -20,7 +20,7 @@ export function Pagination({
         }}
         disabled={currentPage === 1}
         className={`${
-          currentPage === 1 ? 'opacity-50 pointer-events-none' : ''
+          currentPage === 1 ? 'pointer-events-none opacity-50' : ''
         }`}
       >
         Anterior
@@ -34,7 +34,7 @@ export function Pagination({
         }}
         disabled={currentPage === totalPages}
         className={`${
-          currentPage === totalPages ? 'opacity-50 pointer-events-none' : ''
+          currentPage === totalPages ? 'pointer-events-none opacity-50' : ''
         }`}
       >
         Próxima

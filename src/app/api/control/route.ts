@@ -30,3 +30,29 @@ export async function GET() {
 
   return NextResponse.json(controls)
 }
+
+// delete older than 30 days
+export async function DELETE() {
+  const trintaDiasAtras = new Date()
+  trintaDiasAtras.setDate(trintaDiasAtras.getDate() - 30)
+
+  const registrosParaExcluir = await prismaClient.control.findMany({
+    where: {
+      modifiedAt: {
+        lt: trintaDiasAtras,
+      },
+    },
+  })
+
+  for (const registro of registrosParaExcluir) {
+    await prismaClient.control.delete({
+      where: {
+        id: registro.id,
+      },
+    })
+  }
+
+  return NextResponse.json({
+    success: 'Registros com mais de 30 dias deletados com sucesso!',
+  })
+}

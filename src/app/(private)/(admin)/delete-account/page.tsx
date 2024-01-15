@@ -5,7 +5,6 @@ import { useQuery } from '@tanstack/react-query'
 import axios from 'axios'
 import { ArrowLeftIcon } from 'lucide-react'
 import Link from 'next/link'
-import { useRouter } from 'next/navigation'
 import React from 'react'
 import { useForm } from 'react-hook-form'
 
@@ -28,7 +27,6 @@ import {
 } from '@/components/ui/select'
 import { Skeleton } from '@/components/ui/skeleton'
 import { useDeleteUser } from '@/hooks'
-import { useStore } from '@/store'
 import {
   deleteUserSchema,
   DeleteUserSchemaType,
@@ -41,10 +39,6 @@ type UserType = {
 }
 
 export default function DeleteAccountPage() {
-  const { user } = useStore()
-
-  const router = useRouter()
-
   const form = useForm<DeleteUserSchemaType>({
     mode: 'onChange',
     resolver: zodResolver(deleteUserSchema),
@@ -67,8 +61,6 @@ export default function DeleteAccountPage() {
       console.error(err)
     }
   }
-
-  if (!user?.admin) router.push('/')
 
   return (
     <div className="flex h-screen items-center justify-center">

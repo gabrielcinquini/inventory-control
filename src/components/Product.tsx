@@ -22,6 +22,7 @@ import {
   CardHeader,
   CardTitle,
 } from './ui/card'
+import { Input } from './ui/input'
 import { Skeleton } from './ui/skeleton'
 import {
   Table,
@@ -33,6 +34,7 @@ import {
 } from './ui/table'
 
 export default function Product({ itemsPerPage }: { itemsPerPage: number }) {
+  const { user } = useStore()
   const [currentPage, setCurrentPage] = useState(1)
   const { pending } = useStore()
 
@@ -46,13 +48,19 @@ export default function Product({ itemsPerPage }: { itemsPerPage: number }) {
     queryKey: ['products'],
   })
 
+  const [filter, setFilter] = useState('')
+  const filteredProducts = products?.filter((product) => {
+    return product.name.toLocaleLowerCase().includes(filter.toLocaleLowerCase())
+  })
+
   const totalPages =
-    products && products.length > 0
-      ? Math.ceil(products.length / itemsPerPage)
+    filteredProducts && filteredProducts.length > 0
+      ? Math.ceil(filteredProducts.length / itemsPerPage)
       : 1
 
   const getProducts = async () => {
     const response = await axios.get<ItemSchemaType[]>('/api/item')
+
     return response.data
   }
 
@@ -71,9 +79,18 @@ export default function Product({ itemsPerPage }: { itemsPerPage: number }) {
         <CardDescription>
           Os produtos do seu estoque estão aqui.
         </CardDescription>
-        <FormCreateProduct />
+        <div className="flex flex-col gap-10">
+          <FormCreateProduct />
+          <Input
+            className="w-1/2"
+            placeholder="Filtrar por NOME"
+            value={filter}
+            onChange={(e) => {
+              setFilter(e.target.value)
+            }}
+          />
+        </div>
       </CardHeader>
-
       <CardContent>
         <Table>
           <TableHeader>
@@ -92,7 +109,7 @@ export default function Product({ itemsPerPage }: { itemsPerPage: number }) {
                   </TableCell>
                 </TableRow>
               ))}
-            {products?.slice(startIndex, endIndex).map((item, index) => (
+            {filteredProducts?.slice(startIndex, endIndex).map((item) => (
               <>
                 <TableRow key={item.id}>
                   <TableCell>{item.name}</TableCell>
@@ -103,22 +120,24 @@ export default function Product({ itemsPerPage }: { itemsPerPage: number }) {
                     <div className="flex items-center gap-2">
                       <FormEditProduct item={item} />
 
-                      <DeleteAlert
-                        title={`Tem certeza que deseja deletar o produto
-                        ${item.name}?`}
-                        fn={() => {
-                          toast.promise(handleDeleteItem(item.id), {
-                            loading: `Deletando o produto ${item.name}...`,
-                          })
-                        }}
-                      >
-                        <button
-                          className="rounded-full bg-red-600 p-2 text-black transition-all duration-200 hover:bg-red-950 disabled:opacity-80"
-                          disabled={pending}
+                      {user?.admin && (
+                        <DeleteAlert
+                          title={`Tem certeza que deseja deletar o produto
+                          ${item.name}?`}
+                          fn={() => {
+                            toast.promise(handleDeleteItem(item.id), {
+                              loading: `Deletando o produto ${item.name}...`,
+                            })
+                          }}
                         >
-                          <Trash2 />
-                        </button>
-                      </DeleteAlert>
+                          <button
+                            className="rounded-full bg-red-600 p-2 text-black transition-all duration-200 hover:bg-red-950 disabled:opacity-80"
+                            disabled={pending}
+                          >
+                            <Trash2 />
+                          </button>
+                        </DeleteAlert>
+                      )}
                     </div>
                   </TableCell>
                 </TableRow>

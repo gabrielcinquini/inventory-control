@@ -1,7 +1,8 @@
 'use client'
 
-import { Actions, useStore, State } from '.'
 import { useRef } from 'react'
+
+import { Actions, State, useStore } from '.'
 
 type Initializer = Partial<State & Actions>
 

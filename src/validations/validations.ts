@@ -2,45 +2,50 @@ import { z } from 'zod'
 
 export const userSchema = z.object({
   id: z.string().uuid(),
+  // username: z
+  //   .string()
+  //   .regex(/^\d{3}\.\d{3}\.\d{3}-\d{2}$/, 'Formato inválido(123.456.789-00)')
+  //   .refine(
+  //     (value) => {
+  //       const cleanDigits = value.replace(/[^\d]/g, '')
+
+  //       if (cleanDigits.length !== 11) {
+  //         return false
+  //       }
+
+  //       const calculateDigit = (digits: number[], weights: number[]) => {
+  //         const sum = digits.reduce(
+  //           (acc, digit, index) => acc + digit * weights[index],
+  //           0,
+  //         )
+  //         const result = sum % 11
+  //         return result < 2 ? 0 : 11 - result
+  //       }
+
+  //       const cpfDigits = cleanDigits.slice(0, 9).split('').map(Number)
+  //       const firstDigit = calculateDigit(
+  //         cpfDigits,
+  //         [10, 9, 8, 7, 6, 5, 4, 3, 2],
+  //       )
+
+  //       const cpfWithFirstDigit = cleanDigits.slice(0, 10).split('').map(Number)
+  //       const lastDigit = calculateDigit(
+  //         cpfWithFirstDigit,
+  //         [11, 10, 9, 8, 7, 6, 5, 4, 3, 2],
+  //       )
+
+  //       return (
+  //         Number(cleanDigits[9]) === firstDigit &&
+  //         Number(cleanDigits[10]) === lastDigit
+  //       )
+  //     },
+  //     { message: 'CPF inválido' },
+  //   ),
   username: z
     .string()
-    .regex(/^\d{3}\.\d{3}\.\d{3}-\d{2}$/, 'Formato inválido(123.456.789-00)')
-    .refine(
-      (value) => {
-        const cleanDigits = value.replace(/[^\d]/g, '')
-
-        if (cleanDigits.length !== 11) {
-          return false
-        }
-
-        const calculateDigit = (digits: number[], weights: number[]) => {
-          const sum = digits.reduce(
-            (acc, digit, index) => acc + digit * weights[index],
-            0,
-          )
-          const result = sum % 11
-          return result < 2 ? 0 : 11 - result
-        }
-
-        const cpfDigits = cleanDigits.slice(0, 9).split('').map(Number)
-        const firstDigit = calculateDigit(
-          cpfDigits,
-          [10, 9, 8, 7, 6, 5, 4, 3, 2],
-        )
-
-        const cpfWithFirstDigit = cleanDigits.slice(0, 10).split('').map(Number)
-        const lastDigit = calculateDigit(
-          cpfWithFirstDigit,
-          [11, 10, 9, 8, 7, 6, 5, 4, 3, 2],
-        )
-
-        return (
-          Number(cleanDigits[9]) === firstDigit &&
-          Number(cleanDigits[10]) === lastDigit
-        )
-      },
-      { message: 'CPF inválido' },
-    ),
+    .regex(/^[0-9]+$/, 'Deve conter apenas números')
+    .min(7, 'Mínimo de 7 caracteres')
+    .max(10, 'Máximo de 10 caracteres'),
   password: z.string().min(1, 'Mínimo de 1 caracter'),
   name: z
     .string()

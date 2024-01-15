@@ -5,12 +5,8 @@ import { useQuery } from '@tanstack/react-query'
 import axios from 'axios'
 import { ArrowLeftIcon } from 'lucide-react'
 import Link from 'next/link'
-import { useRouter } from 'next/navigation'
-import React, { useState } from 'react'
 import { useForm } from 'react-hook-form'
-import { toast } from 'sonner'
 
-import DeleteAlert from '@/components/DeleteAlert'
 import { ModeToggleTheme } from '@/components/ModeToggleTheme'
 import { Button } from '@/components/ui/button'
 import {
@@ -30,7 +26,6 @@ import {
 } from '@/components/ui/select'
 import { Skeleton } from '@/components/ui/skeleton'
 import { useGiveUserPermissions } from '@/hooks/Users'
-import { useStore } from '@/store'
 import {
   editUserPermissionSchema,
   EditUserPermissionSchemaType,
@@ -42,11 +37,7 @@ type UserType = {
   lastName: string
 }
 
-export default function ChangePermissions() {
-  const { user } = useStore()
-
-  const router = useRouter()
-
+export default function ChangePermissionsPage() {
   const form = useForm<EditUserPermissionSchemaType>({
     mode: 'onChange',
     resolver: zodResolver(editUserPermissionSchema),
@@ -75,8 +66,6 @@ export default function ChangePermissions() {
       console.error(err)
     }
   }
-
-  if (!user?.admin) router.push('/')
 
   return (
     <div className="flex h-screen items-center justify-center">

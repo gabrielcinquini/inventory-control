@@ -1,9 +1,8 @@
 'use client'
 
 import { deleteCookie } from 'cookies-next'
-import { LogOut, User, UserPlus } from 'lucide-react'
+import { LogOut, UserPlus } from 'lucide-react'
 import Link from 'next/link'
-import { useRouter } from 'next/navigation'
 import React from 'react'
 
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
@@ -19,6 +18,7 @@ import {
 import { useStore } from '@/store'
 
 import { ModeToggleTheme } from './ModeToggleTheme'
+import { Skeleton } from './ui/skeleton'
 
 export default function Header() {
   const { user } = useStore()
@@ -28,32 +28,28 @@ export default function Header() {
     window.location.href = '/'
   }
 
-  if (!user) return <p>Loading...</p>
-
   return (
     <header className="flex h-40 justify-between px-10 pt-2">
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <button className="flex h-fit items-center justify-center">
-            <Avatar>
-              <AvatarImage src="" />
-              <AvatarFallback>
-                {user?.name.charAt(0)}
-                {user.lastName.charAt(0)}
-              </AvatarFallback>
-            </Avatar>
-          </button>
+          {!user ? (
+            <Skeleton className="h-10 w-10" />
+          ) : (
+            <button className="flex h-fit items-center justify-center">
+              <Avatar>
+                <AvatarImage src="" />
+                <AvatarFallback>
+                  {user.name.charAt(0)}
+                  {user.lastName.charAt(0)}
+                </AvatarFallback>
+              </Avatar>
+            </button>
+          )}
         </DropdownMenuTrigger>
         <DropdownMenuContent className="w-56">
           <DropdownMenuLabel>Minha Conta</DropdownMenuLabel>
           <DropdownMenuSeparator />
           <DropdownMenuGroup>
-            <DropdownMenuItem>
-              <User className="mr-2 h-4 w-4" />
-              <Link className="flex w-full" href="/perfil">
-                Perfil
-              </Link>
-            </DropdownMenuItem>
             <DropdownMenuItem>
               <LogOut className="mr-2 h-4 w-4" />
               <button className="flex w-full" onClick={handleLogout}>
@@ -61,7 +57,7 @@ export default function Header() {
               </button>
             </DropdownMenuItem>
           </DropdownMenuGroup>
-          {user.admin && (
+          {user?.admin && (
             <>
               <DropdownMenuSeparator />
               <DropdownMenuGroup>

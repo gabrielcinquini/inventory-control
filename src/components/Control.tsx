@@ -1,13 +1,13 @@
 import { useQuery } from '@tanstack/react-query'
 import axios from 'axios'
 import { format } from 'date-fns'
+import { ptBR } from 'date-fns/locale'
 import { ArrowRight, ChevronDown, ChevronUp, Trash2 } from 'lucide-react'
 import React, { useState } from 'react'
 import { toast } from 'sonner'
 
 import { useDeleteControl } from '@/hooks/Controls/Mutations/useDeleteControl'
 import { useStore } from '@/store'
-import { ControlSchemaType } from '@/validations/validations'
 
 import DeleteAlert from './DeleteAlert'
 import { Pagination } from './Pagination'
@@ -19,6 +19,9 @@ import {
   CardHeader,
   CardTitle,
 } from './ui/card'
+
+import { ControlSchemaType } from '@/validations/validations'
+import { Input } from './ui/input'
 import { Skeleton } from './ui/skeleton'
 import {
   Table,
@@ -50,6 +53,10 @@ export default function Control({ itemsPerPage }: { itemsPerPage: number }) {
 
   const getControls = async () => {
     const response = await axios.get<ControlSchemaType[]>('/api/control')
+
+    // delete older than 30 days
+    await axios.delete('/api/control')
+
     return response.data
   }
 
@@ -63,13 +70,38 @@ export default function Control({ itemsPerPage }: { itemsPerPage: number }) {
     }
   }
 
+  const [filter, setFilter] = useState('')
+  const filteredControls = controls?.filter((control) => {
+    const userFullName =
+      `${control.User.name} ${control.User.lastName}`.toLowerCase()
+    const formattedDate = format(new Date(control.modifiedAt), 'PPPP', {
+      locale: ptBR,
+    })
+    const productName = control.Item.name.toLowerCase()
+    return (
+      userFullName.includes(filter.toLowerCase()) ||
+      productName.includes(filter.toLocaleLowerCase()) ||
+      formattedDate.includes(filter.toLocaleLowerCase())
+    )
+  })
+
   return (
     <Card>
       <CardHeader>
         <CardTitle>Controle</CardTitle>
-        <CardDescription>
-          Aqui você pode observar quem fez determinada alteração.
-        </CardDescription>
+        <div className="flex flex-col gap-10">
+          <CardDescription>
+            Aqui você pode observar quem fez determinada alteração.
+          </CardDescription>
+          <Input
+            className="w-1/2"
+            placeholder="Filtrar por NOME ou DATA ou PRODUTO"
+            value={filter}
+            onChange={(e) => {
+              setFilter(e.target.value)
+            }}
+          />
+        </div>
       </CardHeader>
       <CardContent className="space-y-2">
         <Table>
@@ -92,7 +124,7 @@ export default function Control({ itemsPerPage }: { itemsPerPage: number }) {
                   </TableCell>
                 </TableRow>
               ))}
-            {controls?.slice(startIndex, endIndex).map((control, index) => (
+            {filteredControls?.slice(startIndex, endIndex).map((control) => (
               <TableRow key={control.id}>
                 <TableCell>
                   {control.User.name} {control.User.lastName}
@@ -100,7 +132,8 @@ export default function Control({ itemsPerPage }: { itemsPerPage: number }) {
                 <TableCell>
                   {format(
                     new Date(control.modifiedAt),
-                    "dd/MM/yyyy 'às' HH:mm",
+                    "iii, dd 'de' LLL 'de' yyyy 'às' HH:mm",
+                    { locale: ptBR },
                   )}
                 </TableCell>
                 <TableCell>{control.Item.name}</TableCell>

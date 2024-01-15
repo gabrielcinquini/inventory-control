@@ -3,6 +3,7 @@ import { NextRequest, NextResponse } from 'next/server'
 
 import { prismaClient } from '@/database/client'
 import { editUserPermissionSchema } from '@/validations/validations'
+import { ParamsProps } from '../../control/[id]/route'
 
 export async function POST(req: NextRequest) {
   const authToken = req.headers.get('Authorization')
@@ -85,7 +86,7 @@ export async function POST(req: NextRequest) {
   })
 }
 
-export async function DELETE(req: NextRequest, { params }: any) {
+export async function DELETE(req: NextRequest, { params }: ParamsProps) {
   const { id } = params
   const authToken = req.headers.get('Authorization')
   if (!authToken)

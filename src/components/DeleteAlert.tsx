@@ -1,7 +1,4 @@
-import { Trash2 } from 'lucide-react'
 import React, { ReactNode } from 'react'
-
-import { useStore } from '@/store'
 
 import {
   AlertDialog,

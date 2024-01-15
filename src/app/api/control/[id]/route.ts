@@ -3,7 +3,13 @@ import { NextRequest, NextResponse } from 'next/server'
 
 import { prismaClient } from '@/database/client'
 
-export async function DELETE(req: NextRequest, { params }: any) {
+export interface ParamsProps {
+  params: {
+    id: string
+  }
+}
+
+export async function DELETE(req: NextRequest, { params }: ParamsProps) {
   const { id } = params
   const authToken = req.headers.get('Authorization')
   if (!authToken)

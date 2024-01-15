@@ -1,23 +1,15 @@
 'use client'
 
-import axios, { AxiosError } from 'axios'
-
-import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-
+import axios, { AxiosError } from 'axios'
+import { setCookie } from 'cookies-next'
+import { useRouter } from 'next/navigation'
+import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
 
-import { useRouter } from 'next/navigation'
-import { formatCPF } from '@/utils/utils'
-import {
-  LoginUserFormSchemaType,
-  loginUserFormSchema,
-} from '@/validations/validations'
-
-import { Input } from '@/components/ui/input'
-import { Button } from '@/components/ui/button'
 import Loader from '@/components/Loader'
-
+import { ModeToggleTheme } from '@/components/ModeToggleTheme'
+import { Button } from '@/components/ui/button'
 import {
   Form,
   FormControl,
@@ -26,11 +18,18 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form'
-import { ModeToggleTheme } from '@/components/ModeToggleTheme'
-
-import { setCookie } from 'cookies-next'
+import { Input } from '@/components/ui/input'
+import { formatToNumber } from '@/utils/utils'
+import {
+  loginUserFormSchema,
+  LoginUserFormSchemaType,
+} from '@/validations/validations'
+import { EyeIcon, EyeOffIcon } from 'lucide-react'
+import { useState } from 'react'
 
 export default function LoginPage() {
+  const [showPassword, setShowPassword] = useState(false)
+
   const form = useForm<LoginUserFormSchemaType>({
     mode: 'onChange',
     resolver: zodResolver(loginUserFormSchema),
@@ -61,7 +60,7 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="flex h-screen justify-center items-center">
+    <div className="flex h-screen items-center justify-center">
       <div className="absolute top-12">
         <ModeToggleTheme />
       </div>
@@ -80,13 +79,14 @@ export default function LoginPage() {
                   <FormControl>
                     <Input
                       type="text"
-                      placeholder="Usuário(C.P.F)"
+                      placeholder="Usuário(R.A)"
                       {...field}
                       onChange={(event) => {
-                        formatCPF(event)
+                        formatToNumber(event)
                         field.onChange(event)
                       }}
                       autoComplete="off"
+                      min={1}
                     />
                   </FormControl>
                   <FormMessage />
@@ -100,24 +100,32 @@ export default function LoginPage() {
               control={form.control}
               name="password"
               render={({ field }) => (
-                <FormItem>
+                <FormItem className="relative">
                   <FormControl>
                     <Input
-                      type="password"
+                      type={showPassword ? 'text' : 'password'}
                       placeholder="Senha"
                       {...field}
                       onChange={(event) => {
                         field.onChange(event)
                       }}
                       autoComplete="off"
+                      min={1}
                     />
                   </FormControl>
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword((prev) => !prev)}
+                    className="absolute right-2 -translate-y-10"
+                  >
+                    {showPassword ? <EyeIcon /> : <EyeOffIcon />}
+                  </button>
                   <FormMessage />
                 </FormItem>
               )}
             />
           </div>
-          <div className="flex w-full justify-between flex-col gap-8">
+          <div className="flex w-full flex-col justify-between gap-8">
             <Button
               className="disabled:cursor-not-allowed disabled:opacity-50"
               type="submit"

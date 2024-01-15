@@ -16,7 +16,7 @@ const initialState: State = {
   pending: false,
 }
 
-export const useStore = create<State & Actions>((set, get) => {
+export const useStore = create<State & Actions>((set) => {
   return {
     ...initialState,
     setUser: (user) => set({ user }),

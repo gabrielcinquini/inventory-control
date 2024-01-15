@@ -14,28 +14,34 @@ export function formatName(event: React.ChangeEvent<HTMLInputElement>) {
   }
 }
 
-export function formatCPF(event: React.ChangeEvent<HTMLInputElement>) {
+export function formatToNumber(event: React.ChangeEvent<HTMLInputElement>) {
   const currentValue = event.target.value.replace(/[^\d]/g, '')
   const currentPos = event.target.selectionStart || 0
 
-  const formattedCPF = currentValue.replace(
-    /^(\d{3})(\d{1,3})?(\d{1,3})?(\d{1,2})?$/,
-    (_, p1, p2, p3, p4) => {
-      let result = p1
-      if (p2) result += `.${p2}`
-      if (p3) result += `.${p3}`
-      if (p4) result += `-${p4}`
-      return result
-    },
-  )
+  const formattedTextToNumber = currentValue.replace(/\D/g, '')
 
-  event.target.value = formattedCPF
+  event.target.value = formattedTextToNumber
 
   // Define a nova posição do cursor após a formatação
-  const newPos = currentPos + formattedCPF.length - currentValue.length
+  const newPos = currentPos + formattedTextToNumber.length - currentValue.length
   event.target.setSelectionRange(newPos, newPos)
 }
 
 export const revalidatePath = (paths: string[], queryClient: QueryClient) => {
   paths.map((p) => queryClient.invalidateQueries({ queryKey: [p] }))
+}
+
+const generateRandomColor = () => {
+  const red = Math.floor(Math.random() * 256)
+  const green = Math.floor(Math.random() * 256)
+  const blue = Math.floor(Math.random() * 256)
+  return `rgb(${red}, ${green}, ${blue})`
+}
+
+export const generateRandomColorsArray = (numColors: number) => {
+  const colorsArray = []
+  for (let i = 0; i < numColors; i++) {
+    colorsArray.push(generateRandomColor())
+  }
+  return colorsArray
 }

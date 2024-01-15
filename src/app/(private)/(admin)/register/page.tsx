@@ -5,7 +5,6 @@ import { ArrowLeftIcon } from '@radix-ui/react-icons'
 import axios, { AxiosError } from 'axios'
 import { getCookie } from 'cookies-next'
 import Link from 'next/link'
-import { useRouter } from 'next/navigation'
 import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
 
@@ -20,22 +19,21 @@ import {
   FormMessage,
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
-import { useStore } from '@/store'
-import { formatCPF, formatName } from '@/utils/utils'
+import { formatName, formatToNumber } from '@/utils/utils'
 import {
   registerUserFormSchema,
   RegisterUserFormSchemaType,
 } from '@/validations/validations'
+import { EyeOffIcon, EyeIcon } from 'lucide-react'
+import { useState } from 'react'
 
 export default function Home() {
-  const { user } = useStore()
+  const [showPassword, setShowPassword] = useState(false)
 
   const form = useForm<RegisterUserFormSchemaType>({
     mode: 'all',
     resolver: zodResolver(registerUserFormSchema),
   })
-
-  const router = useRouter()
 
   const handleRegister = async (
     user: Omit<RegisterUserFormSchemaType, 'confirmPassword'>,
@@ -56,8 +54,6 @@ export default function Home() {
     }
   }
 
-  if (!user?.admin) router.push('/')
-
   return (
     <div className="flex h-screen items-center justify-center">
       <div className="absolute top-12">
@@ -76,12 +72,15 @@ export default function Home() {
                 <FormControl>
                   <Input
                     type="text"
-                    placeholder="Usuário(C.P.F)"
+                    placeholder="Usuário(R.A)"
                     onChange={(e) => {
+                      formatToNumber(e)
                       field.onChange(e)
-                      formatCPF(e)
                     }}
                     autoComplete="off"
+                    className="appearance-none"
+                    min={7}
+                    max={10}
                   />
                 </FormControl>
                 <FormMessage />
@@ -132,15 +131,22 @@ export default function Home() {
             name="password"
             control={form.control}
             render={({ field }) => (
-              <FormItem>
+              <FormItem className="relative">
                 <FormControl>
                   <Input
-                    type="password"
+                    type={showPassword ? 'text' : 'password'}
                     placeholder="Senha"
                     onChange={field.onChange}
                     autoComplete="off"
                   />
                 </FormControl>
+                <button
+                  type="button"
+                  onClick={() => setShowPassword((prev) => !prev)}
+                  className="absolute right-2 -translate-y-10"
+                >
+                  {showPassword ? <EyeIcon /> : <EyeOffIcon />}
+                </button>
                 <FormMessage />
               </FormItem>
             )}

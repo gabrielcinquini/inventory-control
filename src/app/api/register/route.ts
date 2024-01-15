@@ -1,6 +1,6 @@
 import { hashSync } from 'bcryptjs'
 import CryptoJS from 'crypto-js'
-import { sign, verify } from 'jsonwebtoken'
+import { verify } from 'jsonwebtoken'
 import { NextRequest, NextResponse } from 'next/server'
 
 import { prismaClient } from '@/database/client'
