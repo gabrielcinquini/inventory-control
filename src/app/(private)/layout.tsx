@@ -1,10 +1,10 @@
 import axios from 'axios'
 import { cookies, headers } from 'next/headers'
-import { redirect } from 'next/navigation'
-import React, { PropsWithChildren } from 'react'
+import React, { PropsWithChildren, Suspense } from 'react'
 
 import UserStoreInitializer from '@/store/initializer'
 import { UseMeType } from '@/validations/validations'
+import { VerifyCookie } from '@/components/VerifyCookie'
 
 async function getUser() {
   try {
@@ -21,7 +21,7 @@ async function getUser() {
     })
     return response.data
   } catch (error) {
-    redirect('/')
+    return null
   }
 }
 
@@ -30,6 +30,9 @@ export default async function layout({ children }: PropsWithChildren) {
   return (
     <div>
       <UserStoreInitializer user={response} />
+      <Suspense fallback={null}>
+        <VerifyCookie isLogged={!!response} />
+      </Suspense>
       {children}
     </div>
   )
