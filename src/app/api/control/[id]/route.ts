@@ -17,7 +17,7 @@ export async function DELETE(req: NextRequest, { params }: ParamsProps) {
       { message: 'O token deve ser passado' },
       { status: 404 },
     )
-  const { sub: userId } = verify(authToken, 'SUPER_SECRET')
+  const { sub: userId } = verify(authToken, process.env.JWT_SECRET)
   const userFound = await prisma.user.findFirst({
     where: { id: userId as string },
     select: {
