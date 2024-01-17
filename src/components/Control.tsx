@@ -54,9 +54,6 @@ export default function Control({ itemsPerPage }: { itemsPerPage: number }) {
   const getControls = async () => {
     const response = await axios.get<ControlSchemaType[]>('/api/control')
 
-    // delete older than 30 days
-    await axios.delete('/api/control')
-
     return response.data
   }
 
