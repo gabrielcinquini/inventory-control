@@ -4,8 +4,8 @@ import { prisma } from '@/database/client'
 export const dynamic = 'force-dynamic'
 
 // delete older than 30 days
-
-export async function DELETE() {
+// set as GET because of cron not accepting other than GET request
+export async function GET() {
   const trintaDiasAtras = new Date()
   trintaDiasAtras.setDate(trintaDiasAtras.getDate() - 30)
 
