@@ -1,5 +1,7 @@
 'use client'
 
+import { ModeToggleTheme } from '@/components/ModeToggleTheme'
+
 import {
   Card,
   CardHeader,
@@ -8,8 +10,6 @@ import {
   CardContent,
 } from '@/components/ui/card'
 import SignInForm from '@/components/SignInForm'
-
-import { ModeToggleTheme } from '@/components/ModeToggleTheme'
 
 export default function LoginPage() {
   return (
