@@ -34,7 +34,7 @@ export async function POST(req: NextRequest) {
       { status: 404 },
     )
 
-  if (!amount || !totalAmount)
+  if (typeof amount === 'undefined' || typeof totalAmount === 'undefined') {
     return NextResponse.json(
       {
         message:
@@ -42,6 +42,7 @@ export async function POST(req: NextRequest) {
       },
       { status: 404 },
     )
+  }
 
   if (amount > totalAmount)
     return NextResponse.json(
