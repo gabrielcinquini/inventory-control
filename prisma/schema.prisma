@@ -1,6 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -27,6 +24,7 @@ model Item {
   name        String
   amount      Int       @default(0)
   totalAmount Int
+  room        String
   Control     Control[]
 }
 
@@ -39,6 +37,9 @@ model Control {
   modifiedAt      DateTime @default(now())
   itemId          String
   userId          String
-  User            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   Item            Item     @relation(fields: [itemId], references: [id], onDelete: Cascade)
+  User            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([itemId], map: "Control_itemId_fkey")
+  @@index([userId], map: "Control_userId_fkey")
 }

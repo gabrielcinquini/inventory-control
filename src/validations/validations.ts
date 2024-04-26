@@ -137,6 +137,7 @@ export const itemSchema = z.object({
       invalid_type_error: 'A quantidade deve ser um valor inteiro',
     })
     .int(),
+  room: z.enum(['F04', 'F07']),
 })
 export type ItemSchemaType = z.infer<typeof itemSchema>
 
@@ -144,6 +145,7 @@ export const itemSchemaForm = itemSchema.pick({
   name: true,
   amount: true,
   totalAmount: true,
+  room: true,
 })
 export type ItemSchemaFormType = z.infer<typeof itemSchemaForm>
 

@@ -8,6 +8,14 @@ import { itemSchemaForm, ItemSchemaFormType } from '@/validations/validations'
 import { Button } from './ui/button'
 import { Form, FormControl, FormField, FormItem, FormMessage } from './ui/form'
 import { Input } from './ui/input'
+import {
+  Select,
+  SelectTrigger,
+  SelectValue,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+} from './ui/select'
 
 export function FormCreateProduct() {
   const formCreateProduct = useForm<ItemSchemaFormType>({
@@ -66,6 +74,32 @@ export function FormCreateProduct() {
                   }}
                   autoComplete="off"
                 />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={formCreateProduct.control}
+          name="room"
+          render={({ field }) => (
+            <FormItem>
+              <FormControl>
+                <Select
+                  onValueChange={(e) => {
+                    field.onChange(e)
+                  }}
+                >
+                  <SelectTrigger className="w-[200px] p-3">
+                    <SelectValue placeholder="Selecione uma sala" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectGroup>
+                      <SelectItem value="F04">F04</SelectItem>
+                      <SelectItem value="F07">F07</SelectItem>
+                    </SelectGroup>
+                  </SelectContent>
+                </Select>
               </FormControl>
               <FormMessage />
             </FormItem>

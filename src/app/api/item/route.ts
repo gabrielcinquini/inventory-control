@@ -12,6 +12,7 @@ export async function GET() {
       name: true,
       amount: true,
       totalAmount: true,
+      room: true,
     },
   })
 
@@ -24,7 +25,7 @@ export async function POST(req: NextRequest) {
 
   if (!parsedBody.success) return NextResponse.json(parsedBody.error)
 
-  const { name, amount, totalAmount } = parsedBody.data
+  const { name, amount, totalAmount, room } = parsedBody.data
 
   const itemAlreadyRegistered = await prisma.item.findFirst({
     where: {
@@ -45,6 +46,7 @@ export async function POST(req: NextRequest) {
       name,
       amount,
       totalAmount,
+      room,
     },
   })
 

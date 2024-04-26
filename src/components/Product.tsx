@@ -32,6 +32,14 @@ import {
   TableHeader,
   TableRow,
 } from './ui/table'
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from './ui/select'
 
 export default function Product({ itemsPerPage }: { itemsPerPage: number }) {
   const { user } = useStore()
@@ -49,8 +57,12 @@ export default function Product({ itemsPerPage }: { itemsPerPage: number }) {
   })
 
   const [filter, setFilter] = useState('')
+  const [selectedRoom, setSelectedRoom] = useState<string>('all')
   const filteredProducts = products?.filter((product) => {
-    return product.name.toLocaleLowerCase().includes(filter.toLocaleLowerCase())
+    const nameMatch = product.name.toLowerCase().includes(filter.toLowerCase())
+    const roomMatch =
+      selectedRoom !== 'all' ? product.room === selectedRoom : true
+    return nameMatch && roomMatch
   })
 
   const totalPages =
@@ -81,14 +93,32 @@ export default function Product({ itemsPerPage }: { itemsPerPage: number }) {
         </CardDescription>
         <div className="flex flex-col gap-10">
           <FormCreateProduct />
-          <Input
-            className="w-1/2"
-            placeholder="Filtrar por NOME"
-            value={filter}
-            onChange={(e) => {
-              setFilter(e.target.value)
-            }}
-          />
+          <div className="flex gap-2">
+            <Input
+              className="w-1/2"
+              placeholder="Filtrar por NOME"
+              value={filter}
+              onChange={(e) => {
+                setFilter(e.target.value)
+              }}
+            />
+            <Select
+              onValueChange={(value) => {
+                setSelectedRoom(value)
+              }}
+            >
+              <SelectTrigger className="w-[200px] p-3">
+                <SelectValue placeholder="Todas as salas" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectGroup>
+                  <SelectItem value="all">Todas as salas</SelectItem>
+                  <SelectItem value="F04">F04</SelectItem>
+                  <SelectItem value="F07">F07</SelectItem>
+                </SelectGroup>
+              </SelectContent>
+            </Select>
+          </div>
         </div>
       </CardHeader>
       <CardContent>
@@ -97,6 +127,7 @@ export default function Product({ itemsPerPage }: { itemsPerPage: number }) {
             <TableRow>
               <TableHead>Produto</TableHead>
               <TableHead>Quantidade</TableHead>
+              <TableHead>Sala</TableHead>
               <TableHead align="right"></TableHead>
             </TableRow>
           </TableHeader>
@@ -104,7 +135,7 @@ export default function Product({ itemsPerPage }: { itemsPerPage: number }) {
             {isLoading &&
               Array.from({ length: 4 }).map((_, index) => (
                 <TableRow key={index}>
-                  <TableCell colSpan={3}>
+                  <TableCell colSpan={4}>
                     <Skeleton className="h-10" />
                   </TableCell>
                 </TableRow>
@@ -116,6 +147,7 @@ export default function Product({ itemsPerPage }: { itemsPerPage: number }) {
                   <TableCell>
                     {item.amount}/{item.totalAmount}
                   </TableCell>
+                  <TableCell>{item.room}</TableCell>
                   <TableCell>
                     <div className="flex items-center gap-2">
                       <FormEditProduct item={item} />
