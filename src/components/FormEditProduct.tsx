@@ -42,6 +42,7 @@ export function FormEditProduct({ item }: FormEditProductType) {
     name: '',
     amount: 0,
     totalAmount: 0,
+    room: 'F04',
   })
   const { onEditProduct } = useEditProduct(product)
 
